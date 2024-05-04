@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2024 Nathanael Gandhi
@@ -21,7 +20,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 import argparse
 import logging
 import os
@@ -40,7 +38,7 @@ def main():
     # Get the basename of the current scripts parent directory
     parent_dir = os.path.basename(file_path)
     logging.debug(f"Parent dir: {parent_dir}")
-    
+
     # Get the basename of the current scripts grandparent directory
     grandparent_dir = os.path.basename(os.path.dirname(file_path))
     logging.debug(f"Grandparent dir: {grandparent_dir}")
