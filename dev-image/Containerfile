@@ -53,8 +53,7 @@ RUN if [ -z "$(find /var/lib/apt/lists/ -mindepth 1 -maxdepth 1)" ]; then \
     sudo apt-get install -y \
     vim nano \
     git ssh curl \
-    tree file htop \
-    direnv
+    tree file htop direnv gitg gitk
 
 ################################################################################
 # Ensures extend bash shell
