@@ -70,7 +70,7 @@ else \
 fi
 
 ## Hook direnv
-RUN if [ ! grep -q 'eval "$(direnv hook bash)"' ~/.bashrc ]; then \
+RUN if ! grep -q 'eval "$(direnv hook bash)"' ~/.bashrc; then \
     echo 'eval "$(direnv hook bash)"' >> ~/.bashrc; \
 fi
 
