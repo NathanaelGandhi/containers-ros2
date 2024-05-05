@@ -57,7 +57,7 @@ def main():
         print(build_script + " FAILED. Exiting.")
         return
 
-    print("\nAll container build scripts completed successfully.")
+    print("\nAll container image build scripts completed successfully.")
 
 
 if __name__ == "__main__":
