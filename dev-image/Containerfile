@@ -53,8 +53,7 @@ RUN if [ -z "$(find /var/lib/apt/lists/ -mindepth 1 -maxdepth 1)" ]; then \
     sudo apt-get install -y \
     vim nano \
     git ssh curl \
-    tree file htop \
-    direnv
+    tree file htop direnv gitg gitk
 
 ################################################################################
 # Ensures extend bash shell
@@ -71,7 +70,7 @@ else \
 fi
 
 ## Hook direnv
-RUN if [ ! grep -q 'eval "$(direnv hook bash)"' ~/.bashrc ]; then \
+RUN if ! grep -q 'eval "$(direnv hook bash)"' ~/.bashrc; then \
     echo 'eval "$(direnv hook bash)"' >> ~/.bashrc; \
 fi
 
@@ -92,8 +91,8 @@ RUN pip install \
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-action
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-common-plugins
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-console
-RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-graph
-RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-publisher
+# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-graph
+# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-publisher
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-reconfigure
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-service-caller
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-srv
