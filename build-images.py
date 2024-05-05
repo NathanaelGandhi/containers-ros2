@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2024 Nathanael Gandhi
@@ -21,10 +20,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 import os
 import subprocess
+
 
 def main():
     # Get the file path of the current script
@@ -39,20 +37,28 @@ def main():
         # build base image
         image_dir = "base-image"
         build_script = file_path + "/" + image_dir + "/build-image.py"
-        print("Starting: " +  build_script)
+        print("Starting: " + build_script)
         subprocess.check_call(["python3", build_script])
-        
+
         # build dev image with base image
         image_dir = "dev-image"
         build_script = file_path + "/" + image_dir + "/build-image.py"
-        print("Starting: " +  build_script)
-        subprocess.check_call(["python3", build_script, "--build-arg", " BASE_IMAGE=" + parent_dir + "-base-image:latest"])
-        
+        print("Starting: " + build_script)
+        subprocess.check_call(
+            [
+                "python3",
+                build_script,
+                "--build-arg",
+                " BASE_IMAGE=" + parent_dir + "-base-image:latest",
+            ]
+        )
+
     except subprocess.CalledProcessError:
         print(build_script + " FAILED. Exiting.")
         return
 
     print("\nAll container build scripts completed successfully.")
-    
+
+
 if __name__ == "__main__":
     main()

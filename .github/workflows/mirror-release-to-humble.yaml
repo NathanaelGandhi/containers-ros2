@@ -1,9 +1,9 @@
 ---
-name: Mirror main to humble
+name: Mirror release to humble
 
 on:
     push:
-        branches: [main]
+        branches: [release]
 
 permissions:
     contents: write

@@ -40,14 +40,14 @@ If you cloned this repo (maybe as part of [NathanaelGandhi/devcontainer-ros2](ht
 ## base-image
 ***The base-image can be treated as your projects source-of-truth when it comes to development.<br>We all want to avoid the classic "but it works on my machine" problem.***
 
-The [Base Image Containerfile](base-image/Containerfile) is where you want to be adding all your project dependencies that are required to run/build/test your project via CI/CD pipelines. This gives you a much smaller (and hopefully cheaper/faster) image to be used in runners. 
+The [Base Image Containerfile](base-image/Containerfile) is where you want to be adding all your project dependencies that are required to run/build/test your project via CI/CD pipelines. This gives you a much smaller (and hopefully cheaper/faster) image to be used in runners.
 
 This also has added benefits when you work in a team. You can distribute/maintain a common "standard" config while allowing your colleagues to define their own dev-images on top that contains all their own creature comforts of choice.
 
 ## dev-image
 ***The dev-image is your developer playground. Define a standard development environment, get each developer make their own or throw out all the rules. It can be the wild wild west, the choice is yours.***
 
-The [Dev Image Containerfile](dev-image/Containerfile) is where you want to be adding all your developer luxuries. They make your life easier, but be real, no automated bot ever needs access to any of it. There is also no reason to only have a single dev-image. Copy it, rename it, do whatever. 
+The [Dev Image Containerfile](dev-image/Containerfile) is where you want to be adding all your developer luxuries. They make your life easier, but be real, no automated bot ever needs access to any of it. There is also no reason to only have a single dev-image. Copy it, rename it, do whatever.
 
 The [dev-image Build Script](base-image/build-image.py) (also the base-image one, they are the same) has a provision for a ```--name``` arg. Just populate this when you are modifying the [Build All Your Images Script](build-images.py) and the build process will spit out separate images for each. This arg (and all the others) can also just be passed directly to an images own build script. There is freedom here to work it how you like, and if you don't, just modify it!
 
