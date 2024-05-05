@@ -91,8 +91,8 @@ RUN pip install \
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-action
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-common-plugins
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-console
-RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-graph
-RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-publisher
+# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-graph
+# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-publisher
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-reconfigure
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-service-caller
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-srv
