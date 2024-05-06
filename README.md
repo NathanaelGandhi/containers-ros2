@@ -1,4 +1,7 @@
 # containers-ros2
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/NathanaelGandhi/containers-ros2/main.svg)](https://results.pre-commit.ci/latest/github/NathanaelGandhi/containers-ros2/main)
+[![Release Drafter](https://github.com/NathanaelGandhi/containers-ros2/actions/workflows/release-drafter.yml/badge.svg?branch=release)](https://github.com/NathanaelGandhi/containers-ros2/actions/workflows/release-drafter.yml)
+[![Mirror release to humble](https://github.com/NathanaelGandhi/containers-ros2/actions/workflows/mirror-release-to-humble.yaml/badge.svg?branch=release)](https://github.com/NathanaelGandhi/containers-ros2/actions/workflows/mirror-release-to-humble.yaml)
 
 **What is going on here?**<br>A collection of Dockerfiles/Containerfiles and build scripts for building ROS2 base & development images.
 
