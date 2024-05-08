@@ -20,10 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ARG BASE_IMAGE=containers-ros2-base-image:latest
+ARG BASE_IMAGE
+# ARG BASE_IMAGE=containers-ros2-base-image:latest
 FROM ${BASE_IMAGE}
 # Note: ENV ROS_DISTRO is set in BASE_IMAGE
 LABEL ROS_DISTRO=${ROS_DISTRO}
+
+# Note: TARGETPLATFORM is set by Docker BuildKit
+ARG TARGETPLATFORM
+LABEL TARGETPLATFORM=${TARGETPLATFORM}
+# Note: You should guard platform specific instructions with TARGETPLATFORM
+RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
+        echo "Running on linux/amd64"; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm64/v8" ] ; then \
+        echo "Running on linux/arm64/v8"; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm/v7" ] ; then \
+        echo "Running on linux/arm/v7"; \
+    fi
 
 ################################################################################
 # Ensures there is a non-root user
@@ -41,22 +54,20 @@ RUN if [ "$(id -un)" != "$USERNAME" ] ; then \
 USER $USERNAME
 
 ################################################################################
-# Install basic apt packages
-## editors: vim, nano
-## utils-core: git ...
-## utils-n2h: tree ...
-RUN if [ -z "$(find /var/lib/apt/lists/ -mindepth 1 -maxdepth 1)" ]; then \
-        sudo apt-get update; \
-    else \
-        echo "Using previous apt lists from last update"; \
-    fi && \
-    sudo apt-get install -y \
+# APT
+## Check if the apt cache is older than 30 days
+RUN test "$(find /var/lib/apt/lists/ -maxdepth 0 -mtime -30)" || apt-get update
+## Install packages: core utils
+### editors: vim, nano
+### utils-core: git ...
+### utils-n2h: tree ...
+RUN sudo apt-get install -y \
     vim nano \
     git ssh curl \
-    tree file htop direnv gitg gitk
+    tree file htop direnv
 
 ################################################################################
-# Ensures extend bash shell
+# Ensures extended bash shell
 ## Oh-My-Bash extensions
 RUN if [ -d ~/.oh-my-bash ]; then \
     echo "Directory ~/.oh-my-bash already exists. Not installing"; \
@@ -77,33 +88,49 @@ fi
 ################################################################################
 # DEVELOPER SOFTWARE - Add new additions below
 ################################################################################
-# Install pip packages
-## clang-format from apt is very old (~v14) vs pip v18+
+# PIP
+## Install packages
+### clang-format from apt is very old (~v14) vs pip v18+
+### pdm for python project management
+### pre-commit for git hooks
 RUN pip install \
+    clang-format \
     pdm \
     pre-commit
 
 ################################################################################
+# APT
+## Check if the apt cache is older than 30 days
+RUN test "$(find /var/lib/apt/lists/ -maxdepth 0 -mtime -30)" || apt-get update
+## Install general packages
+### gitg and gitk for graphical git
+RUN sudo apt-get install -y \
+    gitg gitk
 ## Install ros apt packages: ros-${ROS_DISTRO}-*
 ## note: use individual RUN commands to allow for caching
-
 ### rqt and its plugins
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-action
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-common-plugins
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-console
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-graph
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-publisher
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-reconfigure
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-service-caller
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-srv
-# RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt-topic
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rqt*
-
 ### rviz2
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-rviz2
-
 ### gazebo & ros_gz
 # RUN sudo apt-get install -y ros-${ROS_DISTRO}-ros-gz
 
 ################################################################################
-ENTRYPOINT ["/bin/bash"]
+# INSTALL FROM SOURCE
+## Install EXAMPLE from source
+# WORKDIR /opt
+### Clone the repository
+# RUN git clone -b v2.1.0 https://github.com/EXAMPLE/example.git
+### Create build directory
+# RUN mkdir -p /opt/example/build
+### Change working directory to build
+# WORKDIR /opt/example/build
+### Run cmake
+# RUN cmake ..
+### Run make and install
+# RUN make install
+
+################################################################################
+# ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/ros_entrypoint.sh"]

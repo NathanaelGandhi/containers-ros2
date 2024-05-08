@@ -25,6 +25,18 @@ FROM ros:${ROS_DISTRO}
 ENV ROS_DISTRO=${ROS_DISTRO}
 LABEL ROS_DISTRO=${ROS_DISTRO}
 
+# Note: TARGETPLATFORM is set by Docker BuildKit
+ARG TARGETPLATFORMdoc
+LABEL TARGETPLATFORM=${TARGETPLATFORM}
+# Note: You should guard platform specific instructions with TARGETPLATFORM
+RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
+        echo "Running on linux/amd64"; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm64/v8" ] ; then \
+        echo "Running on linux/arm64/v8"; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm/v7" ] ; then \
+        echo "Running on linux/arm/v7"; \
+    fi
+    
 ################################################################################
 # Ensures there is a non-root user
 ARG USERNAME=builder
@@ -41,40 +53,39 @@ RUN if [ "$(id -un)" != "$USERNAME" ] ; then \
 USER $USERNAME
 
 ################################################################################
-# Install apt packages
-## python3-pip required by ros2
-RUN sudo apt-get update && \
-    sudo apt-get install -y \
-    python3-pip
+# APT
+## Check if the apt cache is older than 30 days
+RUN test "$(find /var/lib/apt/lists/ -maxdepth 0 -mtime -30)" || sudo apt-get update
+## Install packages
+### python3-pip required by ros2
+### tools to build from source
+### more...
+RUN sudo apt-get install -y \
+    python3-pip \
+    git cmake build-essential
 
 ################################################################################
-# Install pip packages
-## clang-format from apt is very old (~v14) vs pip v18+
-RUN pip install \
-    clang-format
+# PIP
+## Install packages
+# RUN pip install \
 
 ################################################################################
 # Create directories for filesystem mapping
 ## Could be mounted as non-volatile memory
 RUN sudo mkdir -p /mnt/storage
 ## Could be mounted as volatile memory
-RUN sudo mkdir -p /tmp/ram
+RUN sudo mkdir -p /mnt/ram && \
+    sudo mkdir -p /tmp/ram && \
+    sudo ln -s /tmp/ram /mnt/ram
 
 ################################################################################
 # Dependencies that need to be installed for CI/CD pipelines
 ## ros2: ros-$ROS_DISTRO-*
 ## note: use individual RUN commands to allow for caching
-RUN sudo apt-get install -y ros-humble-behaviortree-cpp
-
-## Install required packages for building from source
-RUN sudo apt-get install -y \
-    git \
-    cmake \
-    build-essential
+# RUN apt-get install -y ros-humble-behaviortree-cpp
 
 ## Install EXAMPLE from source
-USER root
-WORKDIR /opt
+# WORKDIR /opt
 ### Clone the repository
 # RUN git clone -b v2.1.0 https://github.com/EXAMPLE/example.git
 ### Create build directory
@@ -85,7 +96,6 @@ WORKDIR /opt
 # RUN cmake ..
 ### Run make and install
 # RUN make install
-USER $USERNAME
 
 ################################################################################
 ENTRYPOINT ["/bin/bash"]

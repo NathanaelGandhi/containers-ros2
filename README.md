@@ -13,15 +13,20 @@
 - [base-image/](base-image)
   - Designed to contain all dependencies that are required to run/build/test your ROS2 project via CI/CD pipelines.
   - Inherits from an official ROS Docker image
-  - [Base Image Containerfile](base-image/Containerfile)
+  - Supports multi-architecture (multi-platform) images
+    - ros:humble only supports ```"linux/amd64,linux/arm64/v8"```
+  - [Base Image Dockerfile](base-image/Dockerfile)
   - [Base Image Build Script (python)](base-image/build-image.py)
 - [dev-image/](dev-image)
   - Designed to contain all additional dependencies and tools that are useful for developing your ROS2 project.
   - Inherits from ```base-image```
+  - Supports multi-architecture (multi-platform) images
   - [Dev Image Containerfile](base-image/Containerfile)
   - [Dev Image Build Script (python)](base-image/build-image.py)
 - [Build Images Script (python)](build-images.py)
   - Designed to call the build scipts of child container images and provide a status print on success/failure
+  - Supports multi-architecture (multi-platform) images
+    - Limited to the architectures of inherited images. Example: ros:humble only supports ```"linux/amd64,linux/arm64/v8"```
   - Can be called directly in a devcontainer
     - Intended to be added as a submodule in the root devcontainer workspace
       - Example:<br>```"initializeCommand": "./containers-ros2/build-images.py"```
