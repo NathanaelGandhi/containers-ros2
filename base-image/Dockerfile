@@ -103,5 +103,10 @@ RUN sudo mkdir -p /mnt/ram && \
 # RUN make install
 
 ################################################################################
-# ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT
+## Modify ros_entrypoint to drop to a bash shell if no commands are specified
+RUN sed -i.bak -e '/^source/ s|^source \(.*\)|source \1|' -e 's/^exec.*/if [ $# -gt 0 ]; then\n    exec "$@"\nelse\n    exec bash\nfi/' /ros_entrypoint.sh && \
+    echo "Original ros_entrypoint.sh >> ros_entrypoint.sh.bk:" && cat /ros_entrypoint.sh.bak && \
+    echo "\nModified ros_entrypoint.sh:" && cat /ros_entrypoint.sh
+## Set the entry point
 ENTRYPOINT ["/ros_entrypoint.sh"]
