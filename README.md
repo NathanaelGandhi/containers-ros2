@@ -51,13 +51,13 @@ This is currently unsupported as the there are permission issues when using a no
 ### Running a container in a terminal
 The following command will start an interactive container, mount your current dir at ```/mnt/host``` and remove it on exit. Modify this command to suit your own image naming/flags if needed.
 ```
-docker run --rm -it -v $(pwd):/mnt/host containers-ros2-dev-image/linux/amd64
+docker run --rm -it -v $(pwd):/mnt/host containers-ros2-dev-image
 ```
 
 ### Running a container in the background
 The following command will start an interactive container in the background, mount your current dir at ```/mnt/host``` and name the container. You will need to call ```docker stop <name>``` to stop it. Modify this command to suit your own image naming/flags if needed.
 ```
-docker run -d -it -v $(pwd):/mnt/host --name containers-ros2-dev-image-amd64 containers-ros2-dev-image/linux/amd64
+docker run -d -it -v $(pwd):/mnt/host --name containers-ros2-dev-image containers-ros2-dev-image
 ```
 
 ### Having to run a container daily
