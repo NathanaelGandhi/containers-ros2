@@ -9,6 +9,10 @@
 
 **What can I do with this?**<br>Whatever you want. It's under an [MIT License](LICENSE).
 
+## Requirements:
+- python3
+- Docker (Docker-Desktop if you want to build arm images)
+
 ## Overview:
 - [base-image/](base-image)
   - Designed to contain all dependencies that are required to run/build/test your ROS2 project. Can be used for multi-arch builds or via CI/CD pipelines.
