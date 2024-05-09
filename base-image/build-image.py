@@ -36,11 +36,12 @@ def run_command(command_string):
     except RuntimeError as e:
         logging.error(e)
 
+
 def main():
     # SETUP
-    build_options = "" # string list of build args
-    platform_list = [] # list of platforms to be populated in multi-platform cases
-    images_built = "" # list of images built for logging
+    build_options = ""  # string list of build args
+    platform_list = []  # list of platforms to be populated in multi-platform cases
+    images_built = ""  # list of images built for logging
     logging.basicConfig(level=logging.INFO)
 
     # Get the file path of the current script
@@ -55,18 +56,18 @@ def main():
     grandparent_dir = os.path.basename(os.path.dirname(file_path))
     logging.debug(f"Grandparent dir: {grandparent_dir}")
 
-    # Create an ArgumentParser object. 
+    # Create an ArgumentParser object.
     # This object will hold all the information necessary to parse the command-line arguments into Python data types.
     parser = argparse.ArgumentParser(
         description="base image builder for ROS2",
         epilog="PDM is the preferred Python package management tool for this project",
     )
 
-    # Add arguments to the parser using the add_argument() method. 
+    # Add arguments to the parser using the add_argument() method.
     # Each argument typically consists of a flag (e.g., -f or --foo), a help string, and other optional parameters.
     parser.add_argument(
         "--build-arg",
-        action='append',
+        action="append",
         help="Set build-time variables: stringArray",
         metavar="<key>=<value>",
     )
@@ -104,7 +105,7 @@ def main():
         "-t", "--tag", help="Tag for the image", default="latest", metavar="<IMAGE_TAG>"
     )
 
-    # Call the parse_args() method to parse the command-line arguments. 
+    # Call the parse_args() method to parse the command-line arguments.
     # This method returns an object containing the values of the parsed arguments.
     args = parser.parse_args()
     logging.debug(f"Args: {args}")
@@ -125,7 +126,7 @@ def main():
 
     # build image(s)
     if args.platform:
-        platform_list = args.platform.split(',')
+        platform_list = args.platform.split(",")
         # loop over all platforms and build
         for platform in platform_list:
             image_name = f"{args.name}/{platform}"
@@ -142,8 +143,10 @@ def main():
         run_command(f"docker build --load {image_build_options} {file_path}")
 
     # run_command("docker context rm builder")
-    
+
     logging.info(f"Finished building {images_built}")
     print("")
+
+
 if __name__ == "__main__":
     main()

@@ -40,8 +40,8 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
 
 ################################################################################
 # Ensures there is a non-root user
-# NOTE: Removed for now. There are permission issues when using a non-root user 
-#   and mounting host directories in the container, even after mapping the 
+# NOTE: Removed for now. There are permission issues when using a non-root user
+#   and mounting host directories in the container, even after mapping the
 #   username, uid & gid.
 
 # ARG USER_NAME=builder
