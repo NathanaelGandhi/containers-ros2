@@ -41,22 +41,28 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
 ################################################################################
 # Ensures there is a non-root user
 ARG USERNAME=builder
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_ID=2000
+ARG GROUP_ID=$USER_ID
 
+USER root
 ## Create the user
+RUN echo ${USERNAME} ${USER_ID} ${GROUP_ID}
 RUN if [ "$(id -un)" != "$USERNAME" ] ; then \
-    groupadd --gid $USER_GID $USERNAME && \
-    useradd --shell /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    groupadd --gid $GROUP_ID $USERNAME && \
+    useradd --shell /bin/bash --uid $USER_ID --gid $GROUP_ID -m $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME; \
     fi
+# ## Set the image hostname
+# RUN echo ${HOSTNAME} > /etc/hostname && \
+#     hostnamectl set-hostname ${HOSTNAME}
+
 USER $USERNAME
 
 ################################################################################
 # APT
 ## Check if the apt cache is older than 30 days
-RUN test "$(find /var/lib/apt/lists/ -maxdepth 0 -mtime -30)" || apt-get update
+RUN test "$(find /var/lib/apt/lists/ -maxdepth 1 -type f -mtime -30)" || apt-get update
 ## Install packages: core utils
 ### editors: vim, nano
 ### utils-core: git ...
@@ -74,7 +80,7 @@ RUN if [ -d ~/.oh-my-bash ]; then \
 else \
     echo "Downloading oh-my-bash" && \
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended && \
-    sed -i 's/OSH_THEME="font"/OSH_THEME="vscode"/g' ~/.bashrc && \
+    sed -i 's/OSH_THEME="font"/OSH_THEME="roderik"/g' ~/.bashrc && \
     if [ $? -eq 0 ]; then \
         echo "Oh My Bash installed and theme modified"; \
     fi; \
@@ -101,7 +107,7 @@ RUN pip install \
 ################################################################################
 # APT
 ## Check if the apt cache is older than 30 days
-RUN test "$(find /var/lib/apt/lists/ -maxdepth 0 -mtime -30)" || apt-get update
+RUN test "$(find /var/lib/apt/lists/ -maxdepth 1 -type f -mtime -30)" || apt-get update
 ## Install general packages
 ### gitg and gitk for graphical git
 RUN sudo apt-get install -y \

@@ -41,11 +41,12 @@ def main():
         subprocess.check_call([
             "python3", build_script, 
             "--platform", "linux/amd64,linux/arm64/v8",
+            # "--no-cache",
             # "--progress", "plain"
             ]
         )
 
-        # build dev image with base image for amd64
+        # build dev image (from base image amd64)
         # note: Docker only supports multi-arch images to be pushed to a registry and because 
         #       we only load the base image locally in the docker daemon, we need to specify both 
         #       the local image and platform arg here when building another platforms image.
@@ -57,9 +58,12 @@ def main():
             [
                 "python3",
                 build_script,
-                "--build-arg",
-                "BASE_IMAGE=" + parent_dir + "-base-image/linux/amd64:latest", 
+                "--build-arg", "BASE_IMAGE=" + parent_dir + "-base-image/linux/amd64:latest",
+                "--build-arg", "USERNAME=" + os.getlogin(),
+                "--build-arg", "USER_ID=" + str(os.getuid()),
+                "--build-arg", "GROUP_ID=" + str(os.getgid()), 
                 "--platform", "linux/amd64",
+                # "--no-cache",
                 # "--progress", "plain",
             ]
         )

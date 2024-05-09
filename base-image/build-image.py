@@ -66,6 +66,7 @@ def main():
     # Each argument typically consists of a flag (e.g., -f or --foo), a help string, and other optional parameters.
     parser.add_argument(
         "--build-arg",
+        action='append',
         help="Set build-time variables: stringArray",
         metavar="<key>=<value>",
     )
@@ -111,13 +112,16 @@ def main():
     # Set build options
     # Note: access the values of the parsed arguments using dot notation on the args object.
     if args.build_arg:
-        build_options += f"--build-arg {args.build_arg} "
+        for build_arg in args.build_arg:
+            build_options += f"--build-arg {build_arg} "
     if args.no_cache:
         build_options += "--no-cache "
     if args.progress:
         build_options += f"--progress={args.progress} "
     build_options += f"-f {file_path}/{args.file} "
     logging.debug(f"Build options: {build_options}")
+
+    # run_command("docker buildx create --use --driver docker-container --platform linux/amd64,linux/arm64/v8 builder")
 
     # build image(s)
     if args.platform:
@@ -137,6 +141,8 @@ def main():
         image_build_options += f"-t {image_name}:{args.tag}"
         run_command(f"docker build --load {image_build_options} {file_path}")
 
+    # run_command("docker context rm builder")
+    
     logging.info(f"Finished building {images_built}")
     print("")
 if __name__ == "__main__":

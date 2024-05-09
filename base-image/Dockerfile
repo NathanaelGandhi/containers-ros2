@@ -40,22 +40,27 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
 ################################################################################
 # Ensures there is a non-root user
 ARG USERNAME=builder
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_ID=2000
+ARG GROUP_ID=$USER_ID
 
+USER root
 ## Create the user
 RUN if [ "$(id -un)" != "$USERNAME" ] ; then \
-    groupadd --gid $USER_GID $USERNAME && \
-    useradd --shell /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    groupadd --gid $GROUP_ID $USERNAME && \
+    useradd --shell /bin/bash --uid $USER_ID --gid $GROUP_ID -m $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME; \
     fi
+# ## Set the image hostname
+# RUN echo ${HOSTNAME} > /etc/hostname && \
+#     hostnamectl set-hostname ${HOSTNAME}
+
 USER $USERNAME
 
 ################################################################################
 # APT
 ## Check if the apt cache is older than 30 days
-RUN test "$(find /var/lib/apt/lists/ -maxdepth 0 -mtime -30)" || sudo apt-get update
+RUN test "$(find /var/lib/apt/lists/ -maxdepth 1 -type f -mtime -30)" || sudo apt-get update
 ## Install packages
 ### python3-pip required by ros2
 ### tools to build from source
