@@ -39,9 +39,9 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
     
 ################################################################################
 # Ensures there is a non-root user
-# NOTE: Removed for now, when using a non-root user and mounting host 
-# directories in the container, there are permission issues, even when mapping 
-# the username, uid & gid.
+# NOTE: Removed for now. There are permission issues when using a non-root user 
+#   and mounting host directories in the container, even after mapping the 
+#   username, uid & gid.
 
 # ARG USER_NAME=builder
 # ARG USER_ID=2000
@@ -59,7 +59,7 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
 
 ################################################################################
 # APT
-## Check if the apt cache is older than 30 days
+## Only update if the apt cache is older than 30 days
 RUN test "$(find /var/lib/apt/lists/ -maxdepth 1 -type f -mtime -30)" || sudo apt-get update
 ## Install packages
 ### python3-pip required by ros2

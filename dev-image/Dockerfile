@@ -40,9 +40,9 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
 
 ################################################################################
 # Ensures there is a non-root user
-# NOTE: Removed for now, when using a non-root user and mounting host 
-# directories in the container, there are permission issues, even when mapping 
-# the username, uid & gid.
+# NOTE: Removed for now. There are permission issues when using a non-root user 
+#   and mounting host directories in the container, even after mapping the 
+#   username, uid & gid.
 
 # ARG USER_NAME=builder
 # ARG USER_ID=2000
@@ -60,7 +60,7 @@ RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
 
 ################################################################################
 # APT
-## Check if the apt cache is older than 30 days
+## Only update if the apt cache is older than 30 days
 RUN test "$(find /var/lib/apt/lists/ -maxdepth 1 -type f -mtime -30)" || apt-get update
 ## Install packages: core utils
 ### editors: vim, nano
@@ -105,7 +105,7 @@ RUN pip install \
 
 ################################################################################
 # APT
-## Check if the apt cache is older than 30 days
+## Only update if the apt cache is older than 30 days
 RUN test "$(find /var/lib/apt/lists/ -maxdepth 1 -type f -mtime -30)" || apt-get update
 ## Install general packages
 ### gitg and gitk for graphical git
@@ -138,21 +138,9 @@ RUN sudo apt-get install -y \
 
 ################################################################################
 # ENTRYPOINT
-## Setup a mount point for a host volume and ensure ownership is set to the non-root user
-### Note: This is required because using --volume (-v) sets permissions to root:root
-### TODO: FIX THE BROKEN PERMISSIONS WHEN ACCESSING TOUCHED FILES ON THE HOST
-# RUN if [ ! grep -q 'sudo -E -s -u  $(id -un) /bin/bash -c cd /mnt/host' "/ros_entrypoint.sh" ]; then \
-#         echo "String not found in file" && \
-#         sudo mkdir -p /mnt/host && \
-#         echo "sudo -E -s -u  $(id -un) /bin/bash -c cd /mnt/host" | sudo tee -a /ros_entrypoint.sh; \
-#         # echo "sudo chown -R $(id -u):$(id -g) /mnt/host" | sudo tee -a /ros_entrypoint.sh; \
-#     fi
 ## Modify ros_entrypoint to drop to bash shell if no commands are specified
-# RUN sed -i.bak -e '/^source/ s/^source \(.*\)/source "\1"/' -e 's/^exec.*/if [ $# -gt 0 ]; then\n    exec "$@"\nelse\n    exec bash\nfi/' /ros_entrypoint.sh && cat /ros_entrypoint.sh && cat /ros_entrypoint.sh.bak
 RUN sed -i.bak -e '/^source/ s|^source \(.*\)|source \1|' -e 's/^exec.*/if [ $# -gt 0 ]; then\n    exec "$@"\nelse\n    exec bash\nfi/' /ros_entrypoint.sh && \
     echo "Original ros_entrypoint.sh >> ros_entrypoint.sh.bk:" && cat /ros_entrypoint.sh.bak && \
     echo "\nModified ros_entrypoint.sh:" && cat /ros_entrypoint.sh
-
-
 ## Set the entry point
 ENTRYPOINT ["/ros_entrypoint.sh"]

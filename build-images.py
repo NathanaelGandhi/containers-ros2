@@ -47,9 +47,9 @@ def main():
         )
 
         # build dev image (from base image amd64)
-        # note: Docker only supports multi-arch images to be pushed to a registry and because 
-        #       we only load the base image locally in the docker daemon, we need to specify both 
-        #       the local image and platform arg here when building another platforms image.
+        # note: Docker only supports multi-arch images to be pushed to a registry. Only single-arch 
+        #       images can be loaded into the local docker daemon. Therefore, we need to specify 
+        #       both the local image and platform arg here when building from our base image.
         #       In the case the host matches the platform, only the BASE_IMAGE needs to be specified
         image_dir = "dev-image"
         build_script = file_path + "/" + image_dir + "/build-image.py"
@@ -59,10 +59,8 @@ def main():
                 "python3",
                 build_script,
                 "--build-arg", "BASE_IMAGE=" + parent_dir + "-base-image/linux/amd64:latest",
-                # "--build-arg", "USER_NAME=" + os.getlogin(),
-                # "--build-arg", "USER_ID=" + str(os.getuid()),
-                # "--build-arg", "GROUP_ID=" + str(os.getgid()), 
-                "--platform", "linux/amd64",
+                # "--platform", "linux/amd64",
+                # "--platform", "linux/arm64/v8",
                 # "--no-cache",
                 # "--progress", "plain",
             ]
