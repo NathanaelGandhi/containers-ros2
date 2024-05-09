@@ -30,32 +30,32 @@ ARG TARGETPLATFORMdoc
 LABEL TARGETPLATFORM=${TARGETPLATFORM}
 # Note: You should guard platform specific instructions with TARGETPLATFORM
 RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ] ; then \
-        echo "Running on linux/amd64"; \
+        echo "Running as linux/amd64"; \
     elif [ "${TARGETPLATFORM}" = "linux/arm64/v8" ] ; then \
-        echo "Running on linux/arm64/v8"; \
+        echo "Running as linux/arm64/v8"; \
     elif [ "${TARGETPLATFORM}" = "linux/arm/v7" ] ; then \
-        echo "Running on linux/arm/v7"; \
+        echo "Running as linux/arm/v7"; \
     fi
     
 ################################################################################
 # Ensures there is a non-root user
-ARG USERNAME=builder
-ARG USER_ID=2000
-ARG GROUP_ID=$USER_ID
+# NOTE: Removed for now, when using a non-root user and mounting host 
+# directories in the container, there are permission issues, even when mapping 
+# the username, uid & gid.
 
-USER root
-## Create the user
-RUN if [ "$(id -un)" != "$USERNAME" ] ; then \
-    groupadd --gid $GROUP_ID $USERNAME && \
-    useradd --shell /bin/bash --uid $USER_ID --gid $GROUP_ID -m $USERNAME && \
-    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
-    chmod 0440 /etc/sudoers.d/$USERNAME; \
-    fi
-# ## Set the image hostname
-# RUN echo ${HOSTNAME} > /etc/hostname && \
-#     hostnamectl set-hostname ${HOSTNAME}
+# ARG USER_NAME=builder
+# ARG USER_ID=2000
+# ARG GROUP_ID=$USER_ID
+# RUN echo "USER_NAME=${USER_NAME} USER_ID=${USER_ID} GROUP_ID=${GROUP_ID}"
 
-USER $USERNAME
+# ## Create the user
+# RUN if [ "$(id -un)" != "$USER_NAME" ] ; then \
+#         groupadd --gid $GROUP_ID $USER_NAME && \
+#         useradd --shell /bin/bash --uid $USER_ID --gid $GROUP_ID -m $USER_NAME && \
+#         echo "$USER_NAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USER_NAME && \
+#         chmod 0440 /etc/sudoers.d/$USER_NAME; \
+#     fi
+# USER $USER_NAME
 
 ################################################################################
 # APT
@@ -103,4 +103,5 @@ RUN sudo mkdir -p /mnt/ram && \
 # RUN make install
 
 ################################################################################
-ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/ros_entrypoint.sh"]
