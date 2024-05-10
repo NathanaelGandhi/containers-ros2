@@ -60,6 +60,13 @@ The following command will start an interactive container in the background, mou
 docker run -d -it -v $(pwd):/mnt/host --name containers-ros2-dev-image containers-ros2-dev-image
 ```
 
+### ROS dependency updates
+To update your ROS dependencies navigate to your ws dir and run the following.
+```
+rosdep update && rosdep install -y --from-paths . --ignore-src
+```
+*Note: this has assumed you have mounted your host ros2_ws to the container at ```/mnt/host```*
+
 ### Having to run a container daily
 Your docker run command is probably a good candidate for a shell alias or direnv.
 

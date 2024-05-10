@@ -124,17 +124,14 @@ RUN sudo apt-get install -y \
 ################################################################################
 # INSTALL FROM SOURCE
 ## Install EXAMPLE from source
-# WORKDIR /opt
+### Set the directory
 ### Clone the repository
-# RUN git clone -b v2.1.0 https://github.com/EXAMPLE/example.git
-### Create build directory
-# RUN mkdir -p /opt/example/build
-### Change working directory to build
-# WORKDIR /opt/example/build
-### Run cmake
-# RUN cmake ..
-### Run make and install
-# RUN make install
+### Create and change to build directory
+### Run cmake, make and install
+# RUN cd ~ && \
+#     git clone -b v2.1.0 https://github.com/EXAMPLE/example.git && \
+#     mkdir -p ~/example/build && cd ~/example/build && \
+#     cmake .. && make install
 
 ################################################################################
 # ENTRYPOINT
