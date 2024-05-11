@@ -11,25 +11,25 @@
 
 ## Requirements:
 - python3
-- Docker (Docker-Desktop if you want to build arm images)
+- Docker (Docker-Desktop if you want to build cross-platform images)
 
 ## Overview:
 - [base-image/](base-image)
-  - Designed to contain all dependencies that are required to run/build/test your ROS2 project. Can be used for multi-arch builds or via CI/CD pipelines.
+  - Designed to contain all dependencies that are required to run/build/test your ROS2 project. Can be used for cross-platform builds or via CI/CD pipelines.
   - Inherits from an official ROS Docker image
-  - Supports multi-architecture (multi-platform) images
+  - Supports building from multi-architecture (multi-platform) images
     - ros:humble only supports ```"linux/amd64,linux/arm64/v8"```
   - [Base Image Dockerfile](base-image/Dockerfile)
   - [Base Image Build Script (python)](base-image/build-image.py)
 - [dev-image/](dev-image)
   - Designed to contain all additional dependencies and tools that are useful for developing your ROS2 project.
   - Inherits from ```base-image```
-  - Supports multi-architecture (multi-platform) images
+  - Supports building from multi-architecture (multi-platform) images
   - [Dev Image Dockerfile](base-image/Dockerfile)
   - [Dev Image Build Script (python)](base-image/build-image.py)
 - [Build Images Script (python)](build-images.py)
-  - Designed to call the build scipts of child container images and provide a status print on success/failure
-  - Supports multi-architecture (multi-platform) images
+  - Designed to call the build scripts of child container images
+  - Supports building from multi-architecture (multi-platform) images
     - Limited to the architectures of inherited images. Example: ros:humble only supports ```"linux/amd64,linux/arm64/v8"```
 
 ## Notes:
