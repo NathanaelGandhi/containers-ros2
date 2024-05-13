@@ -11,7 +11,7 @@
 
 ## Requirements:
 - python3
-- Docker (Docker-Desktop if you want to build cross-platform images)
+- Docker (Docker-Desktop or [QEMU without DD](https://docs.docker.com/build/building/multi-platform/#qemu-without-docker-desktop) if you want to build cross-platform images)
 
 ## Overview:
 - [base-image/](base-image)
