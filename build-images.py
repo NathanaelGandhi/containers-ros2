@@ -34,39 +34,17 @@ def main():
     print("Parent dir:", parent_dir)
 
     try:
-        # build base image
-        image_dir = "base-image"
-        build_script = file_path + "/" + image_dir + "/build-image.py"
+        # build core - image for each platform
+        build_script = file_path + "/build-image.py"
         print("Starting: " + build_script)
         subprocess.check_call(
             [
                 "python3",
                 build_script,
-                "--platform",
-                "linux/amd64,linux/arm64/v8",
+                "--platform", "linux/amd64,linux/amd64,linux/arm64/v8",
+                "--target", "core"
                 # "--no-cache",
                 # "--progress", "plain"
-            ]
-        )
-
-        # build dev image (from base image amd64)
-        # note: Docker only supports multi-arch images to be pushed to a registry. Only single-arch
-        #       images can be loaded into the local docker daemon. Therefore, we need to specify
-        #       both the local image and platform arg here when building from our base image.
-        #       In the case the host matches the platform, only the BASE_IMAGE needs to be specified
-        image_dir = "dev-image"
-        build_script = file_path + "/" + image_dir + "/build-image.py"
-        print("Starting: " + build_script)
-        subprocess.check_call(
-            [
-                "python3",
-                build_script,
-                "--build-arg",
-                "BASE_IMAGE=" + parent_dir + "-base-image/linux/amd64:latest",
-                # "--platform", "linux/amd64",
-                # "--platform", "linux/arm64/v8",
-                # "--no-cache",
-                # "--progress", "plain",
             ]
         )
 
