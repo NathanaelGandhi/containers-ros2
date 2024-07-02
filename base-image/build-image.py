@@ -130,21 +130,21 @@ def main():
         # loop over all platforms and build
         for platform in platform_list:
             image_name = f"{args.name}/{platform}"
-            images_built += image_name
+            images_built += f"\n{image_name}"
             image_build_options = build_options
             image_build_options += f"--platform={platform} "
             image_build_options += f"-t {image_name}:{args.tag}"
             run_command(f"docker build --load {image_build_options} {file_path}")
     else:
         image_name = f"{args.name}"
-        images_built += image_name
+        images_built += f"\n{image_name}"
         image_build_options = build_options
         image_build_options += f"-t {image_name}:{args.tag}"
         run_command(f"docker build --load {image_build_options} {file_path}")
 
     # run_command("docker context rm builder")
 
-    logging.info(f"Finished building {images_built}")
+    logging.info(f"Finished building:{images_built}")
     print("")
 
 
